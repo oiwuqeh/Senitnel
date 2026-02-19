@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<!-- ✅ FIX 1: Split into TWO separate script tags -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://onoxlzkidgfwljbfhchy.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ub3hsemtpZGdmd2xqYmZoY2h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE0NDIwNzAsImV4cCI6MjA4NzAxODA3MH0.lnNypKrGk-0ys7qkyy-jJHjmWtUEqU4Nf1bqqd4Na0U';
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+</script>
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SENTINEL — Autonomous Disaster Finance System</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #020810;
+  --bg2: #040d1a;
+  --panel: #060f1f;
+  --panel2: #091526;
+  --border: #0d2a4a;
+  --border2: #1a3f6f;
+  --accent: #00d4ff;
+  --accent2: #0077ff;
+  --accent3: #00ff88;
+  --warn: #ff6b00;
+  --danger: #ff2244;
+  --text: #c8dff0;
+  --text2: #7a9ab8;
+  --text3: #3a5a78;
+  --glow: rgba(0,212,255,0.15);
+  --glow2: rgba(0,119,255,0.1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Rajdhani',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  min-height:100vh;
+}
+
+/* SCAN LINE OVERLAY */
+body::before{
+  content:'';
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.03) 2px,rgba(0,0,0,0.03) 4px);
+  pointer-events:none;z-index:9999;
+}
+
+/* GRID BACKGROUND */
+.grid-bg{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background-image:
+    linear-gradient(rgba(0,80,160,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,80,160,0.04) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;z-index:0;
+}
+
+/* CORNER DECORATIONS */
+.corner{position:fixed;width:60px;height:60px;opacity:0.4;}
+.corner-tl{top:16px;left:16px;border-top:2px solid var(--accent);border-left:2px solid var(--accent);}
+.corner-tr{top:16px;right:16px;border-top:2px solid var(--accent);border-right:2px solid var(--accent);}
+.corner-bl{bottom:16px;left:16px;border-bottom:2px solid var(--accent);border-left:2px solid var(--accent);}
+.corner-br{bottom:16px;right:16px;border-bottom:2px solid var(--accent);border-right:2px solid var(--accent);}
+
+/* HEADER */
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(2,8,16,0.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 32px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;
+}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.logo-icon{
+  width:36px;height:36px;border:2px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--accent);
+  position:relative;animation:pulse-border 3s infinite;
+}
+@keyframes pulse-border{
+  0%,100%{box-shadow:0 0 0 0 rgba(0,212,255,0.4);}
+  50%{box-shadow:0 0 0 6px rgba(0,212,255,0);}
+}
+.logo-text{
+  font-family:'Rajdhani',sans-serif;font-weight:700;font-size:22px;letter-spacing:4px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.logo-sub{font-size:10px;color:var(--text3);letter-spacing:2px;font-family:'Share Tech Mono',monospace;margin-top:-4px;}
+.nav{display:flex;gap:6px;}
+.nav a{
+  font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;
+  color:var(--text2);text-decoration:none;padding:6px 14px;
+  border:1px solid transparent;transition:all 0.2s;text-transform:uppercase;
+}
+.nav a:hover,.nav a.active{color:var(--accent);border-color:var(--border2);background:var(--glow);}
+.status-bar{display:flex;align-items:center;gap:16px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);}
+.status-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--accent3);
+  box-shadow:0 0 8px var(--accent3);animation:blink 2s infinite;
+}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+
+/* MAIN LAYOUT */
+main{position:relative;z-index:1;}
+
+/* HERO SECTION */
+.hero{
+  min-height:calc(100vh - 64px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:60px 32px;position:relative;overflow:hidden;
+}
+.hero-ring{
+  position:absolute;border-radius:50%;
+  border:1px solid rgba(0,212,255,0.08);animation:spin-slow 30s linear infinite;
+}
+.hero-ring:nth-child(1){width:600px;height:600px;top:50%;left:50%;transform:translate(-50%,-50%);}
+.hero-ring:nth-child(2){width:800px;height:800px;top:50%;left:50%;transform:translate(-50%,-50%);animation-duration:45s;animation-direction:reverse;border-color:rgba(0,119,255,0.06);}
+.hero-ring:nth-child(3){width:1000px;height:1000px;top:50%;left:50%;transform:translate(-50%,-50%);animation-duration:60s;border-color:rgba(0,212,255,0.04);}
+@keyframes spin-slow{from{transform:translate(-50%,-50%) rotate(0deg);}to{transform:translate(-50%,-50%) rotate(360deg);}}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border2);
+  background:var(--glow2);padding:6px 16px;border-radius:2px;
+  font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent2);
+  letter-spacing:2px;margin-bottom:32px;animation:fadeInDown 0.6s ease both;
+}
+.hero-title{
+  font-size:clamp(60px,12vw,120px);font-weight:700;letter-spacing:12px;line-height:0.9;
+  background:linear-gradient(180deg,#ffffff 0%,var(--accent) 60%,var(--accent2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:fadeInUp 0.8s ease both 0.1s;
+}
+.hero-tagline{
+  font-size:18px;color:var(--text2);letter-spacing:3px;
+  margin-top:16px;font-weight:300;animation:fadeInUp 0.8s ease both 0.2s;
+}
+.hero-metrics{display:flex;gap:48px;margin-top:64px;animation:fadeInUp 0.8s ease both 0.4s;}
+.metric{text-align:center;}
+.metric-val{
+  font-family:'Space Mono',monospace;font-size:36px;font-weight:700;
+  color:var(--accent);text-shadow:0 0 20px rgba(0,212,255,0.5);
+}
+.metric-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:2px;margin-top:4px;}
+.hero-cta{display:flex;gap:16px;margin-top:48px;animation:fadeInUp 0.8s ease both 0.5s;}
+.btn-primary{
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  color:#000;font-family:'Rajdhani',sans-serif;font-weight:700;
+  font-size:13px;letter-spacing:3px;padding:14px 32px;border:none;cursor:pointer;
+  text-transform:uppercase;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  transition:all 0.2s;text-decoration:none;display:inline-block;
+}
+.btn-primary:hover{box-shadow:0 0 30px rgba(0,212,255,0.4);transform:translateY(-2px);}
+.btn-outline{
+  background:transparent;color:var(--accent);font-family:'Rajdhani',sans-serif;font-weight:600;
+  font-size:13px;letter-spacing:3px;padding:13px 32px;border:1px solid var(--border2);
+  cursor:pointer;text-transform:uppercase;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  transition:all 0.2s;text-decoration:none;display:inline-block;
+}
+.btn-outline:hover{background:var(--glow);border-color:var(--accent);}
+@keyframes fadeInDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+
+/* SECTION */
+section{padding:80px 32px;max-width:1400px;margin:0 auto;position:relative;z-index:1;}
+.section-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:4px;text-transform:uppercase;margin-bottom:8px;}
+.section-title{font-size:clamp(28px,4vw,42px);font-weight:700;letter-spacing:2px;margin-bottom:8px;}
+.section-sub{font-size:15px;color:var(--text2);max-width:600px;line-height:1.7;margin-bottom:48px;}
+
+/* LIVE DASHBOARD */
+#dashboard{background:var(--bg);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+#dashboard>section{max-width:100%;padding:80px 40px;}
+.dash-grid{display:grid;grid-template-columns:300px 1fr 300px;grid-template-rows:auto auto;gap:16px;}
+.panel{background:var(--panel);border:1px solid var(--border);padding:20px;position:relative;overflow:hidden;}
+.panel::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:0.5;
+}
+.panel-title{
+  font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);
+  letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;
+  display:flex;align-items:center;gap:8px;
+}
+.panel-title::before{content:'▸';color:var(--accent);font-size:8px;}
+
+/* Weather Monitor */
+.weather-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.weather-item{background:var(--panel2);border:1px solid var(--border);padding:12px;position:relative;overflow:hidden;}
+.weather-item.alert{border-color:var(--danger);background:rgba(255,34,68,0.05);}
+.weather-item.warn{border-color:var(--warn);background:rgba(255,107,0,0.05);}
+.wi-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:2px;}
+.wi-val{font-family:'Space Mono',monospace;font-size:22px;font-weight:700;color:var(--text);margin:4px 0;}
+.wi-val.red{color:var(--danger);text-shadow:0 0 10px rgba(255,34,68,0.5);}
+.wi-val.orange{color:var(--warn);text-shadow:0 0 10px rgba(255,107,0,0.5);}
+.wi-val.green{color:var(--accent3);}
+.wi-bar{height:3px;background:var(--border);margin-top:6px;border-radius:2px;overflow:hidden;}
+.wi-fill{height:100%;border-radius:2px;transition:width 1s ease;}
+
+/* Event Log */
+.event-log{grid-column:1 / -1;max-height:220px;overflow-y:auto;}
+.event-log::-webkit-scrollbar{width:4px;}
+.event-log::-webkit-scrollbar-track{background:var(--panel);}
+.event-log::-webkit-scrollbar-thumb{background:var(--border2);}
+.log-entry{
+  display:flex;align-items:flex-start;gap:12px;padding:8px 0;
+  border-bottom:1px solid var(--border);font-family:'Share Tech Mono',monospace;
+  font-size:11px;animation:logSlide 0.4s ease;
+}
+@keyframes logSlide{from{opacity:0;transform:translateX(-10px);}to{opacity:1;transform:translateX(0);}}
+.log-time{color:var(--text3);min-width:80px;font-size:10px;}
+.log-type{padding:2px 6px;font-size:9px;letter-spacing:1px;min-width:70px;text-align:center;}
+.log-type.trigger{background:rgba(255,34,68,0.2);color:var(--danger);border:1px solid rgba(255,34,68,0.3);}
+.log-type.contract{background:rgba(0,212,255,0.1);color:var(--accent);border:1px solid rgba(0,212,255,0.2);}
+.log-type.payout{background:rgba(0,255,136,0.1);color:var(--accent3);border:1px solid rgba(0,255,136,0.2);}
+.log-type.claim{background:rgba(255,107,0,0.1);color:var(--warn);border:1px solid rgba(255,107,0,0.2);}
+.log-type.system{background:rgba(122,154,184,0.1);color:var(--text2);border:1px solid rgba(122,154,184,0.2);}
+.log-msg{color:var(--text);flex:1;}
+.log-hash{color:var(--text3);font-size:9px;margin-left:auto;}
+
+/* Map Panel */
+.map-panel{grid-row:1/3;background:var(--panel2);}
+.map-canvas{
+  width:100%;height:280px;position:relative;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 50%, #061830 0%, #020810 100%);
+}
+.map-dot{position:absolute;width:8px;height:8px;border-radius:50%;transform:translate(-50%,-50%);}
+.map-dot.active{background:var(--danger);box-shadow:0 0 0 0 rgba(255,34,68,0.4);animation:map-pulse 2s infinite;}
+.map-dot.payout{background:var(--accent3);box-shadow:0 0 8px var(--accent3);}
+.map-dot.monitor{background:var(--accent);width:4px;height:4px;}
+@keyframes map-pulse{0%{box-shadow:0 0 0 0 rgba(255,34,68,0.6);}70%{box-shadow:0 0 0 16px rgba(255,34,68,0);}100%{box-shadow:0 0 0 0 rgba(255,34,68,0);}}
+.map-grid-overlay{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,80,160,0.08) 1px,transparent 1px),linear-gradient(90deg,rgba(0,80,160,0.08) 1px,transparent 1px);
+  background-size:30px 30px;
+}
+.map-legend{padding:12px 0 0;display:flex;gap:16px;flex-wrap:wrap;}
+.legend-item{display:flex;align-items:center;gap:6px;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);}
+.legend-dot{width:8px;height:8px;border-radius:50%;}
+
+/* Center main dashboard */
+.dash-center{display:flex;flex-direction:column;gap:16px;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+.stat-card{background:var(--panel);border:1px solid var(--border);padding:16px;position:relative;overflow:hidden;}
+.stat-card::after{
+  content:'';position:absolute;top:0;right:0;width:60px;height:60px;
+  background:radial-gradient(circle,var(--glow) 0%,transparent 70%);pointer-events:none;
+}
+.stat-val{font-family:'Space Mono',monospace;font-size:28px;font-weight:700;color:var(--accent);}
+.stat-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:2px;margin-top:4px;}
+.stat-change{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--accent3);margin-top:8px;}
+
+/* Blockchain Panel */
+.chain-feed{display:flex;flex-direction:column;gap:6px;max-height:240px;overflow-y:auto;}
+.chain-feed::-webkit-scrollbar{width:4px;}
+.chain-feed::-webkit-scrollbar-thumb{background:var(--border2);}
+.block-item{
+  background:var(--panel2);border:1px solid var(--border);
+  padding:10px 12px;display:flex;align-items:center;gap:12px;
+  font-family:'Share Tech Mono',monospace;font-size:10px;
+  transition:border-color 0.3s;animation:logSlide 0.4s ease;
+}
+.block-item:hover{border-color:var(--border2);}
+.block-num{color:var(--accent);min-width:60px;}
+.block-hash{color:var(--text3);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.block-amount{color:var(--accent3);min-width:90px;text-align:right;}
+.block-status{padding:2px 6px;font-size:8px;background:rgba(0,255,136,0.1);color:var(--accent3);border:1px solid rgba(0,255,136,0.2);}
+
+/* COMPONENTS SECTION */
+#components{border-top:1px solid var(--border);}
+.components-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.comp-card{
+  background:var(--panel);border:1px solid var(--border);padding:24px;
+  cursor:pointer;transition:all 0.3s;position:relative;overflow:hidden;
+}
+.comp-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,var(--glow),transparent);opacity:0;transition:opacity 0.3s;}
+.comp-card:hover::before{opacity:1;}
+.comp-card:hover{border-color:var(--border2);transform:translateY(-4px);}
+.comp-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:2px;margin-bottom:12px;}
+.comp-icon{font-size:32px;margin-bottom:16px;transition:all 0.3s;filter:grayscale(0.5);}
+.comp-card:hover .comp-icon{filter:none;}
+.comp-name{font-size:18px;font-weight:700;letter-spacing:1px;margin-bottom:8px;}
+.comp-desc{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px;}
+.comp-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.tag{font-family:'Share Tech Mono',monospace;font-size:8px;padding:3px 8px;background:var(--bg2);border:1px solid var(--border2);color:var(--text3);letter-spacing:1px;}
+.comp-arrow{position:absolute;bottom:20px;right:20px;color:var(--text3);font-size:18px;transition:all 0.3s;}
+.comp-card:hover .comp-arrow{color:var(--accent);transform:translate(4px,-4px);}
+
+/* DETAIL MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(2,8,16,0.95);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--panel);border:1px solid var(--border2);width:100%;max-width:800px;max-height:90vh;overflow-y:auto;position:relative;}
+.modal::-webkit-scrollbar{width:4px;}
+.modal::-webkit-scrollbar-thumb{background:var(--border2);}
+.modal-header{padding:24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;background:var(--panel);z-index:10;}
+.modal-title{font-size:22px;font-weight:700;letter-spacing:1px;}
+.modal-sub{font-size:11px;color:var(--text3);font-family:'Share Tech Mono',monospace;letter-spacing:2px;margin-top:4px;}
+.modal-close{background:none;border:1px solid var(--border);color:var(--text2);width:32px;height:32px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.modal-close:hover{border-color:var(--danger);color:var(--danger);}
+.modal-body{padding:24px;}
+.modal-section{margin-bottom:28px;}
+.modal-section-title{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.modal-text{font-size:14px;color:var(--text2);line-height:1.8;}
+.tech-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:8px;}
+.tech-item{background:var(--panel2);border:1px solid var(--border);padding:10px 12px;}
+.tech-name{font-weight:700;font-size:13px;color:var(--text);}
+.tech-role{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-top:2px;letter-spacing:1px;}
+.process-steps{display:flex;flex-direction:column;gap:8px;}
+.step{display:flex;align-items:flex-start;gap:12px;background:var(--panel2);padding:12px;border:1px solid var(--border);}
+.step-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);border:1px solid var(--border2);width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;}
+.step-text{font-size:13px;color:var(--text2);line-height:1.6;}
+
+/* SMART CONTRACT SIMULATOR */
+#simulator{border-top:1px solid var(--border);background:var(--bg2);}
+.sim-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.sim-panel{background:var(--panel);border:1px solid var(--border);padding:24px;}
+.sim-title{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:3px;margin-bottom:20px;}
+.input-group{margin-bottom:16px;}
+.input-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:2px;margin-bottom:6px;display:block;}
+.input-row{display:flex;align-items:center;gap:8px;}
+.sim-input{background:var(--panel2);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:14px;padding:8px 12px;width:100%;outline:none;transition:border-color 0.2s;}
+.sim-input:focus{border-color:var(--border2);}
+.sim-input.breach{border-color:var(--danger);color:var(--danger);}
+.input-unit{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);white-space:nowrap;}
+.threshold-badge{font-family:'Share Tech Mono',monospace;font-size:9px;padding:2px 8px;border:1px solid var(--border);color:var(--text3);}
+.threshold-badge.breached{border-color:var(--danger);color:var(--danger);background:rgba(255,34,68,0.1);}
+.threshold-badge.ok{border-color:var(--accent3);color:var(--accent3);}
+.trigger-btn{
+  width:100%;padding:14px;background:linear-gradient(135deg,rgba(255,34,68,0.2),rgba(255,107,0,0.2));
+  border:1px solid var(--danger);color:var(--danger);font-family:'Rajdhani',sans-serif;
+  font-weight:700;font-size:14px;letter-spacing:3px;cursor:pointer;text-transform:uppercase;
+  margin-top:20px;transition:all 0.3s;
+}
+.trigger-btn:hover{background:linear-gradient(135deg,rgba(255,34,68,0.4),rgba(255,107,0,0.3));box-shadow:0 0 20px rgba(255,34,68,0.3);}
+.trigger-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.contract-output{
+  font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text2);line-height:2;
+  height:360px;overflow-y:auto;padding:16px;background:var(--bg);border:1px solid var(--border);
+}
+.contract-output::-webkit-scrollbar{width:4px;}
+.contract-output::-webkit-scrollbar-thumb{background:var(--border2);}
+.out-line{animation:logSlide 0.3s ease;}
+.out-line.green{color:var(--accent3);}
+.out-line.cyan{color:var(--accent);}
+.out-line.red{color:var(--danger);}
+.out-line.orange{color:var(--warn);}
+.out-line.dim{color:var(--text3);}
+.receipt{background:var(--panel2);border:1px solid var(--border2);padding:16px;margin-top:12px;display:none;}
+.receipt.show{display:block;}
+.receipt-title{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--accent3);letter-spacing:3px;margin-bottom:12px;}
+.receipt-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border);}
+.receipt-key{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);}
+.receipt-val{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text);}
+
+/* CLAIM SUBMISSION */
+#claims{border-top:1px solid var(--border);}
+.claim-layout{display:grid;grid-template-columns:1fr 400px;gap:24px;}
+.claim-form{background:var(--panel);border:1px solid var(--border);padding:24px;}
+.claim-queue{background:var(--panel);border:1px solid var(--border);padding:24px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.form-group{margin-bottom:0;}
+.form-group.full{grid-column:1/-1;}
+.form-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:2px;margin-bottom:6px;display:block;}
+.form-input,.form-select,.form-textarea{
+  width:100%;background:var(--panel2);border:1px solid var(--border);
+  color:var(--text);font-family:'Rajdhani',sans-serif;font-size:14px;
+  padding:10px 12px;outline:none;transition:border-color 0.2s;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--border2);}
+.form-select{appearance:none;cursor:pointer;}
+.form-textarea{height:80px;resize:none;font-size:13px;}
+.upload-zone{border:2px dashed var(--border2);padding:24px;text-align:center;cursor:pointer;transition:all 0.3s;background:var(--bg);grid-column:1/-1;}
+.upload-zone:hover{border-color:var(--accent);background:var(--glow);}
+.upload-icon{font-size:32px;margin-bottom:8px;}
+.upload-text{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:1px;}
+.submit-btn{
+  width:100%;padding:14px;background:linear-gradient(135deg,var(--accent2),var(--accent));
+  border:none;color:#000;font-family:'Rajdhani',sans-serif;font-weight:700;
+  font-size:14px;letter-spacing:3px;cursor:pointer;text-transform:uppercase;
+  margin-top:20px;transition:all 0.2s;
+}
+.submit-btn:hover{box-shadow:0 0 20px rgba(0,212,255,0.3);transform:translateY(-1px);}
+.queue-item{background:var(--panel2);border:1px solid var(--border);padding:12px;margin-bottom:8px;transition:all 0.3s;animation:logSlide 0.4s ease;}
+.queue-item:hover{border-color:var(--border2);}
+.qi-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.qi-id{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);}
+.qi-status{font-family:'Share Tech Mono',monospace;font-size:8px;padding:2px 8px;letter-spacing:1px;}
+.qi-status.pending{background:rgba(255,107,0,0.1);color:var(--warn);border:1px solid rgba(255,107,0,0.3);}
+.qi-status.reviewing{background:rgba(0,212,255,0.1);color:var(--accent);border:1px solid rgba(0,212,255,0.3);}
+.qi-status.approved{background:rgba(0,255,136,0.1);color:var(--accent3);border:1px solid rgba(0,255,136,0.3);}
+.qi-details{font-size:12px;color:var(--text2);}
+.qi-score{display:flex;align-items:center;gap:8px;margin-top:6px;}
+.qi-score-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text3);}
+.qi-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
+.qi-fill{height:100%;border-radius:2px;transition:width 1s ease;}
+.qi-pct{font-family:'Share Tech Mono',monospace;font-size:9px;}
+
+/* ML ANALYZER */
+.ml-panel{background:var(--panel);border:1px solid var(--border);padding:24px;margin-top:16px;grid-column:1/-1;}
+.ml-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.ml-metric{background:var(--panel2);border:1px solid var(--border);padding:16px;text-align:center;}
+.ml-val{font-family:'Space Mono',monospace;font-size:24px;font-weight:700;}
+.ml-lbl{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text3);letter-spacing:2px;margin-top:4px;}
+
+/* SECURITY SECTION */
+#security{border-top:1px solid var(--border);}
+.security-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.sec-card{background:var(--panel);border:1px solid var(--border);padding:24px;}
+.sec-icon{font-size:24px;margin-bottom:12px;}
+.sec-name{font-size:16px;font-weight:700;margin-bottom:8px;}
+.sec-desc{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px;}
+.sec-stack{display:flex;flex-wrap:wrap;gap:6px;}
+.audit-panel{background:var(--panel);border:1px solid var(--border);padding:24px;margin-top:16px;}
+.audit-log{display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;}
+.audit-entry{
+  display:flex;gap:12px;padding:8px 10px;background:var(--panel2);
+  border:1px solid var(--border);font-family:'Share Tech Mono',monospace;
+  font-size:10px;animation:logSlide 0.4s ease;
+}
+.ae-time{color:var(--text3);min-width:80px;}
+.ae-user{color:var(--accent2);min-width:80px;}
+.ae-action{color:var(--text);flex:1;}
+.ae-ip{color:var(--text3);font-size:9px;}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:40px;display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1;}
+.footer-logo{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:20px;letter-spacing:4px;color:var(--accent);}
+.footer-text{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:2px;margin-top:4px;}
+.footer-links{display:flex;gap:24px;}
+.footer-links a{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);text-decoration:none;letter-spacing:1px;transition:color 0.2s;}
+.footer-links a:hover{color:var(--accent);}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+  .dash-grid{grid-template-columns:1fr 1fr;}
+  .map-panel{grid-row:auto;grid-column:1/-1;}
+  .components-grid{grid-template-columns:1fr 1fr;}
+  .sim-layout{grid-template-columns:1fr;}
+  .claim-layout{grid-template-columns:1fr;}
+}
+@media(max-width:700px){
+  .nav{display:none;}
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .components-grid{grid-template-columns:1fr;}
+  .form-grid{grid-template-columns:1fr;}
+  .hero-metrics{flex-direction:column;gap:24px;}
+  .tech-grid{grid-template-columns:1fr;}
+  .ml-grid{grid-template-columns:1fr 1fr;}
+  .security-grid{grid-template-columns:1fr;}
+  footer{flex-direction:column;gap:24px;text-align:center;}
+}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="corner corner-tl"></div>
+<div class="corner corner-tr"></div>
+<div class="corner corner-bl"></div>
+<div class="corner corner-br"></div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">SN</div>
+    <div>
+      <div class="logo-text">SENTINEL</div>
+      <div class="logo-sub">AUTONOMOUS DISASTER FINANCE</div>
+    </div>
+  </div>
+  <nav class="nav">
+    <a href="#dashboard" class="active">Dashboard</a>
+    <a href="#components">Components</a>
+    <a href="#simulator">Simulator</a>
+    <a href="#claims">Claims</a>
+    <a href="#security">Security</a>
+  </nav>
+  <div class="status-bar">
+    <div class="status-dot"></div>
+    <span>SYSTEM ONLINE</span>
+    <span id="live-time">--:--:--</span>
+  </div>
+</header>
+
+<main>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-ring"></div>
+  <div class="hero-ring"></div>
+  <div class="hero-ring"></div>
+  <div class="hero-badge">⚡ PARAMETRIC DISASTER FINANCE PROTOCOL v2.4.1</div>
+  <h1 class="hero-title">SENTINEL</h1>
+  <p class="hero-tagline">AUTONOMOUS · TRANSPARENT · INSTANT · INCLUSIVE</p>
+  <div class="hero-metrics">
+    <div class="metric">
+      <div class="metric-val" id="hero-payouts">$0</div>
+      <div class="metric-label">TOTAL DISBURSED</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val" id="hero-claims">0</div>
+      <div class="metric-label">CLAIMS PROCESSED</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val" id="hero-time">0s</div>
+      <div class="metric-label">AVG PAYOUT TIME</div>
+    </div>
+    <div class="metric">
+      <div class="metric-val" id="hero-uptime">99.9%</div>
+      <div class="metric-label">SYSTEM UPTIME</div>
+    </div>
+  </div>
+  <div class="hero-cta">
+    <a href="#dashboard" class="btn-primary">View Live Dashboard</a>
+    <a href="#simulator" class="btn-outline">Run Simulation</a>
+  </div>
+</div>
+
+<!-- LIVE DASHBOARD -->
+<div id="dashboard">
+  <section>
+    <div class="section-label">// LAYER 1 + 2</div>
+    <div class="section-title">Live Operations Dashboard</div>
+    <div class="section-sub">Real-time weather monitoring, blockchain transactions, and event feed across all active coverage zones.</div>
+    <div class="dash-grid">
+      <!-- Weather Panel -->
+      <div class="panel">
+        <div class="panel-title">WEATHER TRIGGER ENGINE</div>
+        <div class="weather-grid" id="weather-grid"></div>
+      </div>
+      <!-- Stats Row + Event Log -->
+      <div class="dash-center">
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-val" id="stat-triggered">0</div>
+            <div class="stat-label">TRIGGERS FIRED</div>
+            <div class="stat-change">↑ TODAY</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stat-contracts">0</div>
+            <div class="stat-label">CONTRACTS EXEC</div>
+            <div class="stat-change" style="color:var(--accent)">BLOCKCHAIN</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stat-payout">$0K</div>
+            <div class="stat-label">FUNDS RELEASED</div>
+            <div class="stat-change">24H WINDOW</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val" id="stat-claims">0</div>
+            <div class="stat-label">CLAIMS QUEUED</div>
+            <div class="stat-change" style="color:var(--warn)">PENDING AI</div>
+          </div>
+        </div>
+        <div class="panel event-log" style="flex:1;">
+          <div class="panel-title">LIVE EVENT LOG</div>
+          <div id="event-log">
+            <div class="log-entry">
+              <span class="log-time">--:--:--</span>
+              <span class="log-type system">SYSTEM</span>
+              <span class="log-msg">Initializing SENTINEL core modules...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Map -->
+      <div class="panel map-panel" style="grid-column:3;">
+        <div class="panel-title">COVERAGE MAP</div>
+        <div class="map-canvas" id="map-canvas">
+          <div class="map-grid-overlay"></div>
+        </div>
+        <div class="map-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--danger)"></div>ACTIVE TRIGGER</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--accent3)"></div>PAYOUT ZONE</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--accent)"></div>MONITORING</div>
+        </div>
+      </div>
+      <!-- Blockchain feed -->
+      <div class="panel event-log" style="grid-column:1/-1;">
+        <div class="panel-title">BLOCKCHAIN TRANSACTION FEED — MACRO SHIELD CONTROLLER</div>
+        <div class="chain-feed" id="chain-feed"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- SYSTEM COMPONENTS -->
+<div id="components">
+  <section>
+    <div class="section-label">// ARCHITECTURE</div>
+    <div class="section-title">System Components</div>
+    <div class="section-sub">Six specialized microservices work in concert to deliver instant, transparent, and inclusive disaster finance.</div>
+    <div class="components-grid">
+      <div class="comp-card" onclick="openModal('weather')">
+        <div class="comp-num">LAYER 01</div><div class="comp-icon">🌩</div>
+        <div class="comp-name">Weather Trigger Engine</div>
+        <div class="comp-desc">Continuously ingests weather data streams, evaluates parametric thresholds in real-time, and fires blockchain trigger events when breach conditions are met.</div>
+        <div class="comp-tags"><span class="tag">KAFKA</span><span class="tag">OPEN-METEO</span><span class="tag">PYTHON</span><span class="tag">LAMBDA</span></div>
+        <div class="comp-arrow">↗</div>
+      </div>
+      <div class="comp-card" onclick="openModal('blockchain')">
+        <div class="comp-num">LAYER 02</div><div class="comp-icon">⛓</div>
+        <div class="comp-name">Macro Shield Controller</div>
+        <div class="comp-desc">Executes Solidity smart contracts on trigger events for instant fund disbursement. Every transaction is logged immutably on the blockchain with full auditability.</div>
+        <div class="comp-tags"><span class="tag">SOLIDITY</span><span class="tag">ETHEREUM</span><span class="tag">HARDHAT</span><span class="tag">IPFS</span></div>
+        <div class="comp-arrow">↗</div>
+      </div>
+      <div class="comp-card" onclick="openModal('ml')">
+        <div class="comp-num">LAYER 03</div><div class="comp-icon">🤖</div>
+        <div class="comp-name">Micro Shield Surveyor</div>
+        <div class="comp-desc">AI/ML pipeline validates damage photos, checks metadata integrity, detects fraud patterns using anomaly detection, and routes low-confidence claims for human review.</div>
+        <div class="comp-tags"><span class="tag">TENSORFLOW</span><span class="tag">SAGEMAKER</span><span class="tag">ISOLATION FOREST</span></div>
+        <div class="comp-arrow">↗</div>
+      </div>
+      <div class="comp-card" onclick="openModal('ux')">
+        <div class="comp-num">LAYER 04</div><div class="comp-icon">📱</div>
+        <div class="comp-name">UX Empathy Agent</div>
+        <div class="comp-desc">Voice-to-text claim submission in 50+ languages, offline-first mobile design with sync, and guided claim filing to ensure accessibility for all users.</div>
+        <div class="comp-tags"><span class="tag">FLUTTER</span><span class="tag">WHISPER</span><span class="tag">I18NEXT</span><span class="tag">SQLITE</span></div>
+        <div class="comp-arrow">↗</div>
+      </div>
+      <div class="comp-card" onclick="openModal('security')">
+        <div class="comp-num">LAYER 05</div><div class="comp-icon">🔐</div>
+        <div class="comp-name">Security & Compliance</div>
+        <div class="comp-desc">AES-256 encryption at rest, TLS 1.3 in transit, OAuth 2.0 identity management, API gateway rate limiting, and immutable audit logging across all system events.</div>
+        <div class="comp-tags"><span class="tag">AES-256</span><span class="tag">OAUTH 2.0</span><span class="tag">KEYCLOAK</span><span class="tag">KONG</span></div>
+        <div class="comp-arrow">↗</div>
+      </div>
+      <div class="comp-card" onclick="openModal('ops')">
+        <div class="comp-num">LAYER 06</div><div class="comp-icon">⚙</div>
+        <div class="comp-name">Orchestration & Monitoring</div>
+        <div class="comp-desc">Kubernetes container orchestration, CI/CD pipelines, Prometheus metrics with Grafana dashboards, ELK centralized logging, and on-call alerting for SLA compliance.</div>
+        <div class="comp-tags"><span class="tag">KUBERNETES</span><span class="tag">PROMETHEUS</span><span class="tag">ELK STACK</span><span class="tag">GRAFANA</span></div>
+        <div class="comp-arrow">↗</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- SMART CONTRACT SIMULATOR -->
+<div id="simulator">
+  <section>
+    <div class="section-label">// LAYER 02 INTERACTIVE</div>
+    <div class="section-title">Smart Contract Simulator</div>
+    <div class="section-sub">Configure parametric thresholds and run a live simulation of the Macro Shield Controller contract execution.</div>
+    <div class="sim-layout">
+      <div class="sim-panel">
+        <div class="sim-title">▸ PARAMETRIC INPUT CONFIGURATION</div>
+        <div class="input-group">
+          <label class="input-label">TEMPERATURE (°C) — TRIGGER ABOVE 40°C</label>
+          <div class="input-row">
+            <input type="number" class="sim-input" id="sim-temp" value="38" min="0" max="60" oninput="checkBreaches()"/>
+            <span class="input-unit">°C</span>
+            <span class="threshold-badge ok" id="badge-temp">NOMINAL</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">WIND SPEED (km/h) — TRIGGER ABOVE 100 km/h</label>
+          <div class="input-row">
+            <input type="number" class="sim-input" id="sim-wind" value="85" min="0" max="250" oninput="checkBreaches()"/>
+            <span class="input-unit">km/h</span>
+            <span class="threshold-badge ok" id="badge-wind">NOMINAL</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">RAINFALL (mm/24h) — TRIGGER ABOVE 200 mm</label>
+          <div class="input-row">
+            <input type="number" class="sim-input" id="sim-rain" value="180" min="0" max="500" oninput="checkBreaches()"/>
+            <span class="input-unit">mm</span>
+            <span class="threshold-badge ok" id="badge-rain">NOMINAL</span>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">COVERAGE ZONE</label>
+          <select class="sim-input" id="sim-zone">
+            <option>ZONE-A: COASTAL DELTA REGION</option>
+            <option>ZONE-B: HIGHLAND AGRICULTURAL</option>
+            <option>ZONE-C: URBAN METRO CORRIDOR</option>
+            <option>ZONE-D: ISLAND TERRITORIES</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label class="input-label">PAYOUT AMOUNT (USD)</label>
+          <div class="input-row">
+            <input type="number" class="sim-input" id="sim-amount" value="50000" min="1000" max="1000000"/>
+            <span class="input-unit">USD</span>
+          </div>
+        </div>
+        <button class="trigger-btn" id="trigger-btn" onclick="runSimulation()">⚡ EXECUTE SMART CONTRACT</button>
+        <div class="receipt" id="sim-receipt">
+          <div class="receipt-title">▸ TRANSACTION RECEIPT</div>
+          <div id="receipt-rows"></div>
+        </div>
+      </div>
+      <div class="sim-panel">
+        <div class="sim-title">▸ CONTRACT EXECUTION OUTPUT</div>
+        <div class="contract-output" id="contract-output">
+          <div class="out-line dim">// SENTINEL Smart Contract v2.4.1</div>
+          <div class="out-line dim">// Network: Ethereum Mainnet (via Polygon L2)</div>
+          <div class="out-line dim">// Contract: 0x7f3a...9c12</div>
+          <div class="out-line dim">&nbsp;</div>
+          <div class="out-line">Awaiting parametric trigger input...</div>
+          <div class="out-line dim">Configure thresholds above and click EXECUTE</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- CLAIMS SECTION -->
+<div id="claims">
+  <section>
+    <div class="section-label">// LAYER 03 + 04</div>
+    <div class="section-title">Micro Shield — Damage Claim Portal</div>
+    <div class="section-sub">Submit and track individual damage claims. The AI pipeline assesses submissions and routes them for payout or manual review.</div>
+    <div class="claim-layout">
+      <div>
+        <div class="claim-form">
+          <div class="sim-title">▸ SUBMIT DAMAGE CLAIM</div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">CLAIMANT NAME</label>
+              <input type="text" class="form-input" id="claim-name" placeholder="Full name"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">POLICY ID</label>
+              <input type="text" class="form-input" id="claim-policy" placeholder="SNT-XXXXX"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">DISASTER TYPE</label>
+              <select class="form-select" id="claim-type">
+                <option>Flood</option><option>Cyclone / Hurricane</option>
+                <option>Earthquake</option><option>Drought</option><option>Wildfire</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">LOCATION (GPS ZONE)</label>
+              <input type="text" class="form-input" id="claim-location" placeholder="e.g. 24.87°N, 85.12°E"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">ESTIMATED LOSS (USD)</label>
+              <input type="number" class="form-input" id="claim-loss" placeholder="0"/>
+            </div>
+            <div class="form-group">
+              <label class="form-label">SUBMISSION LANGUAGE</label>
+              <select class="form-select" id="claim-lang">
+                <option>English</option><option>Hindi</option><option>Bengali</option>
+                <option>Spanish</option><option>French</option><option>Swahili</option><option>Arabic</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label class="form-label">DAMAGE DESCRIPTION</label>
+              <textarea class="form-textarea" id="claim-desc" placeholder="Describe the damage sustained..."></textarea>
+            </div>
+            <div class="upload-zone" onclick="simulateUpload()">
+              <div class="upload-icon" id="upload-icon">📷</div>
+              <div class="upload-text" id="upload-text">TAP TO ATTACH DAMAGE PHOTOS · VOICE MEMO · DOCUMENTS</div>
+            </div>
+          </div>
+          <button class="submit-btn" onclick="submitClaim()">SUBMIT CLAIM FOR AI ASSESSMENT</button>
+        </div>
+        <div class="panel ml-panel" style="margin-top:16px;">
+          <div class="panel-title">ML ASSESSMENT ENGINE METRICS</div>
+          <div class="ml-grid">
+            <div class="ml-metric"><div class="ml-val" style="color:var(--accent3)" id="ml-accuracy">94.2%</div><div class="ml-lbl">MODEL ACCURACY</div></div>
+            <div class="ml-metric"><div class="ml-val" style="color:var(--accent)" id="ml-processed">0</div><div class="ml-lbl">CLAIMS ASSESSED</div></div>
+            <div class="ml-metric"><div class="ml-val" style="color:var(--warn)" id="ml-flagged">0</div><div class="ml-lbl">FRAUD FLAGGED</div></div>
+            <div class="ml-metric"><div class="ml-val" style="color:var(--accent2)" id="ml-autoapproved">0</div><div class="ml-lbl">AUTO-APPROVED</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="claim-queue">
+        <div class="sim-title">▸ CLAIM PROCESSING QUEUE</div>
+        <div id="claim-queue">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);padding:20px;text-align:center;">
+            No claims submitted yet.<br/>Submit a claim to see AI assessment.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- SECURITY SECTION -->
+<div id="security">
+  <section>
+    <div class="section-label">// LAYER 05</div>
+    <div class="section-title">Security & Compliance Layer</div>
+    <div class="section-sub">Enterprise-grade security protecting user data, financial transactions, and system integrity across all components.</div>
+    <div class="security-grid">
+      <div class="sec-card">
+        <div class="sec-icon">🔒</div><div class="sec-name">Data Encryption</div>
+        <div class="sec-desc">AES-256 encryption for all data at rest. TLS 1.3 enforced for all transport. End-to-end encryption on mobile claim submissions including photos and metadata.</div>
+        <div class="sec-stack"><span class="tag">AES-256</span><span class="tag">TLS 1.3</span><span class="tag">E2E MOBILE</span></div>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">👤</div><div class="sec-name">Identity & Access</div>
+        <div class="sec-desc">OAuth 2.0 / OpenID Connect via Keycloak or Auth0. Role-based access control for claimants, reviewers, admins, and smart contract executors. MFA enforced for admin roles.</div>
+        <div class="sec-stack"><span class="tag">OAUTH 2.0</span><span class="tag">OPENID</span><span class="tag">KEYCLOAK</span><span class="tag">MFA</span></div>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">🛡</div><div class="sec-name">API Security</div>
+        <div class="sec-desc">Kong API Gateway with rate limiting, DDoS protection, and request validation. AWS API Gateway as fallback. All endpoints adhere to OWASP API Security Top 10 guidelines.</div>
+        <div class="sec-stack"><span class="tag">KONG</span><span class="tag">RATE LIMIT</span><span class="tag">OWASP</span><span class="tag">DDOS PROTECT</span></div>
+      </div>
+      <div class="sec-card">
+        <div class="sec-icon">📋</div><div class="sec-name">Audit & Compliance</div>
+        <div class="sec-desc">Immutable blockchain audit trail for all financial events. AWS CloudWatch and ELK Stack for system audit logs. GDPR, ISO 27001, and local data protection law compliance framework.</div>
+        <div class="sec-stack"><span class="tag">BLOCKCHAIN LOG</span><span class="tag">ELK</span><span class="tag">GDPR</span><span class="tag">ISO 27001</span></div>
+      </div>
+    </div>
+    <div class="audit-panel">
+      <div class="sim-title">▸ LIVE SECURITY AUDIT LOG</div>
+      <div class="audit-log" id="audit-log">
+        <div class="audit-entry">
+          <span class="ae-time">--:--:--</span>
+          <span class="ae-user">SYSTEM</span>
+          <span class="ae-action">Security module initialized. All checks passed.</span>
+          <span class="ae-ip">127.0.0.1</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">SENTINEL</div>
+    <div class="footer-text">AUTONOMOUS DISASTER FINANCE SYSTEM · v2.4.1 · ALL SYSTEMS NOMINAL</div>
+  </div>
+  <div class="footer-links">
+    <a href="#dashboard">Dashboard</a>
+    <a href="#components">Architecture</a>
+    <a href="#simulator">Simulator</a>
+    <a href="#claims">Claims</a>
+    <a href="#security">Security</a>
+  </div>
+</footer>
+
+<!-- COMPONENT DETAIL MODALS -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal-content">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modal-title">Component</div>
+        <div class="modal-sub" id="modal-sub">SYSTEM COMPONENT</div>
+      </div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+// ─── LIVE CLOCK ────────────────────────────────────────────────────────────────
+function updateClock() {
+  document.getElementById('live-time').textContent = new Date().toTimeString().slice(0,8);
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ─── WEATHER DATA ─────────────────────────────────────────────────────────────
+const weatherReadings = [
+  { label:'TEMPERATURE', val:38, unit:'°C',   threshold:40,  max:60,  color:'green' },
+  { label:'WIND SPEED',  val:85, unit:'km/h', threshold:100, max:200, color:'green' },
+  { label:'RAINFALL',    val:180,unit:'mm/h', threshold:200, max:400, color:'green' },
+  { label:'HUMIDITY',    val:78, unit:'%',    threshold:95,  max:100, color:'green' },
+];
+
+function renderWeather() {
+  const grid = document.getElementById('weather-grid');
+  grid.innerHTML = weatherReadings.map(w => {
+    const pct = Math.min((w.val / w.max) * 100, 100);
+    const breached = w.val >= w.threshold;
+    const cls = breached ? (w.val >= w.threshold * 1.1 ? 'red' : 'orange') : 'green';
+    const itemCls = breached ? 'weather-item alert' : 'weather-item';
+    const fillColor = cls === 'red' ? 'var(--danger)' : cls === 'orange' ? 'var(--warn)' : 'var(--accent3)';
+    return `<div class="${itemCls}">
+      <div class="wi-label">${w.label}</div>
+      <div class="wi-val ${cls}">${w.val.toFixed(1)}${w.unit}</div>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text3);">THRESH: ${w.threshold}${w.unit}</div>
+      <div class="wi-bar"><div class="wi-fill" style="width:${pct}%;background:${fillColor};"></div></div>
+    </div>`;
+  }).join('');
+}
+function tickWeather() {
+  weatherReadings.forEach(w => {
+    const delta = (Math.random() - 0.45) * 3;
+    w.val = Math.max(w.val * 0.1, Math.min(w.max * 0.95, w.val + delta));
+  });
+  renderWeather();
+}
+renderWeather();
+setInterval(tickWeather, 2500);
+
+// ─── MAP DOTS ─────────────────────────────────────────────────────────────────
+const mapPoints = [
+  {x:20,y:30,type:'monitor'},{x:35,y:55,type:'monitor'},{x:50,y:20,type:'monitor'},
+  {x:65,y:65,type:'monitor'},{x:80,y:40,type:'monitor'},{x:25,y:70,type:'monitor'},
+  {x:55,y:80,type:'payout'},{x:40,y:40,type:'active'},{x:70,y:25,type:'payout'},
+];
+function renderMap() {
+  const canvas = document.getElementById('map-canvas');
+  canvas.querySelectorAll('.map-dot').forEach(d => d.remove());
+  mapPoints.forEach(p => {
+    const dot = document.createElement('div');
+    dot.className = `map-dot ${p.type}`;
+    dot.style.left = p.x + '%';
+    dot.style.top = p.y + '%';
+    canvas.appendChild(dot);
+  });
+}
+renderMap();
+
+// ─── STATS ─────────────────────────────────────────────────────────────────────
+let stats = { triggered:0, contracts:0, payout:0, claims:0 };
+function updateStats() {
+  document.getElementById('stat-triggered').textContent = stats.triggered;
+  document.getElementById('stat-contracts').textContent = stats.contracts;
+  document.getElementById('stat-payout').textContent = '$' + stats.payout + 'K';
+  document.getElementById('stat-claims').textContent = stats.claims;
+  document.getElementById('hero-payouts').textContent = '$' + (stats.payout * 1000).toLocaleString();
+  document.getElementById('hero-claims').textContent = (stats.contracts * 28 + stats.claims).toLocaleString();
+  document.getElementById('hero-time').textContent = Math.floor(Math.random()*3 + 4) + 's';
+}
+updateStats();
+
+// ─── EVENT LOG ─────────────────────────────────────────────────────────────────
+const eventMessages = {
+  trigger:  ['TEMP BREACH: 41.3°C detected in ZONE-A','WIND THRESHOLD: 108 km/h in ZONE-D','RAINFALL ALERT: 212mm/24h ZONE-B','FLOOD TRIGGER activated — ZONE-C'],
+  contract: ['Smart contract 0x8f2a...3b1c executing','Contract SENTINEL_MACRO_v2 deployed','Oracle data verified — proceeding to payout','Multi-sig approval received for disbursement'],
+  payout:   ['$45,000 released to 128 policyholders','Funds transferred: 0x9a3d...c4e2 ✓','Blockchain confirmation: block #18,442,901','IPFS receipt stored: Qm7x2...f9a1'],
+  claim:    ['Claim #SNT-00847 submitted for ML review','AI score: 87.3% confidence — AUTO APPROVED','Claim #SNT-00851 flagged for manual review','Fraud detection: anomalous metadata detected'],
+  system:   ['Kafka stream latency: 12ms ✓','ML model accuracy: 94.2% ✓','Kubernetes pods: 24/24 healthy','Prometheus alert cleared — SLA restored'],
+};
+
+function addLogEntry(type) {
+  const log = document.getElementById('event-log');
+  const now = new Date().toTimeString().slice(0,8);
+  const msgs = eventMessages[type];
+  const msg = msgs[Math.floor(Math.random() * msgs.length)];
+  const hash = (type === 'contract' || type === 'payout') ? '#' + Math.random().toString(16).slice(2,10) : '';
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.innerHTML = `<span class="log-time">${now}</span><span class="log-type ${type}">${type.toUpperCase()}</span><span class="log-msg">${msg}</span><span class="log-hash">${hash}</span>`;
+  log.insertBefore(entry, log.firstChild);
+  while(log.children.length > 20) log.removeChild(log.lastChild);
+}
+
+// ✅ FIX 2a: addLogEntryFromDB — was called but never defined
+function addLogEntryFromDB(type, message, hash, timestamp) {
+  const log = document.getElementById('event-log');
+  const time = timestamp ? new Date(timestamp).toTimeString().slice(0,8) : new Date().toTimeString().slice(0,8);
+  const safeType = ['trigger','contract','payout','claim','system'].includes(type) ? type : 'system';
+  const entry = document.createElement('div');
+  entry.className = 'log-entry';
+  entry.innerHTML = `<span class="log-time">${time}</span><span class="log-type ${safeType}">${safeType.toUpperCase()}</span><span class="log-msg">${message}</span><span class="log-hash">${hash || ''}</span>`;
+  log.insertBefore(entry, log.firstChild);
+  while(log.children.length > 20) log.removeChild(log.lastChild);
+}
+
+// ✅ FIX 2b: renderClaimInQueue — was called but never defined
+function renderClaimInQueue(claim) {
+  const queue = document.getElementById('claim-queue');
+  // Remove placeholder if present
+  const placeholder = queue.querySelector('[style*="padding"]');
+  if(placeholder) placeholder.remove();
+
+  const score = parseFloat(claim.ai_score) || 0;
+  const scoreColor = score > 85 ? 'var(--accent3)' : score > 70 ? 'var(--warn)' : 'var(--danger)';
+  const fillColor  = scoreColor;
+  const statusLabel = claim.status === 'approved' ? 'APPROVED ✓' : claim.status === 'reviewing' ? 'REVIEW' : 'PENDING';
+
+  const item = document.createElement('div');
+  item.className = 'queue-item';
+  item.innerHTML = `
+    <div class="qi-header">
+      <span class="qi-id">${claim.claim_id}</span>
+      <span class="qi-status ${claim.status}">${statusLabel}</span>
+    </div>
+    <div class="qi-details">${claim.claimant_name} · ${claim.disaster_type} · $${parseInt(claim.estimated_loss || 0).toLocaleString()} · ${claim.location}</div>
+    <div class="qi-score">
+      <span class="qi-score-label">AI SCORE</span>
+      <div class="qi-bar"><div class="qi-fill" style="width:${score}%;background:${fillColor};"></div></div>
+      <span class="qi-pct" style="color:${scoreColor}">${score.toFixed(1)}%</span>
+    </div>
+    ${claim.flagged      ? '<div style="font-family:\'Share Tech Mono\',monospace;font-size:9px;color:var(--warn);margin-top:4px;">⚠ ANOMALOUS METADATA — ROUTED TO MANUAL REVIEW</div>' : ''}
+    ${claim.auto_approved? '<div style="font-family:\'Share Tech Mono\',monospace;font-size:9px;color:var(--accent3);margin-top:4px;">✓ AUTO-APPROVED — PAYOUT QUEUED</div>' : ''}
+  `;
+  queue.insertBefore(item, queue.firstChild);
+}
+
+// ─── BLOCKCHAIN FEED ──────────────────────────────────────────────────────────
+let blockNum = 18442890;
+function addBlock() {
+  const feed = document.getElementById('chain-feed');
+  blockNum++;
+  const hash   = '0x' + Math.random().toString(16).slice(2,12) + '...' + Math.random().toString(16).slice(2,6);
+  const amount = '$' + (Math.random()*80+10).toFixed(1) + 'K';
+  const zones  = ['ZONE-A','ZONE-B','ZONE-C','ZONE-D'];
+  const zone   = zones[Math.floor(Math.random()*zones.length)];
+  const item   = document.createElement('div');
+  item.className = 'block-item';
+  item.innerHTML = `<span class="block-num">#${blockNum.toLocaleString()}</span><span class="block-hash">${hash} · ${zone}</span><span class="block-amount">${amount}</span><span class="block-status">CONFIRMED</span>`;
+  feed.insertBefore(item, feed.firstChild);
+  while(feed.children.length > 12) feed.removeChild(feed.lastChild);
+}
+for(let i = 0; i < 6; i++) addBlock();
+
+// ─── AUDIT LOG ────────────────────────────────────────────────────────────────
+const auditEvents = [
+  {user:'API_GATEWAY',    action:'Rate limit applied — 42 requests/min from 203.0.113.0'},
+  {user:'AUTH_SERVICE',   action:'JWT token issued for user ADMIN_01'},
+  {user:'KEYCLOAK',       action:'MFA verified for reviewer access — Role: CLAIM_REVIEWER'},
+  {user:'SMART_CONTRACT', action:'Multi-sig transaction approved — 2/3 signatures collected'},
+  {user:'ENCRYPTION',     action:'AES-256 key rotation completed successfully'},
+  {user:'TLS_MONITOR',    action:'Certificate renewed — expiry: 2026-08-15'},
+  {user:'OAUTH_SERVICE',  action:'Refresh token invalidated for session timeout'},
+  {user:'KONG_GATEWAY',   action:'Suspicious request blocked — SQL injection pattern'},
+];
+function addAuditEntry() {
+  const log = document.getElementById('audit-log');
+  const now = new Date().toTimeString().slice(0,8);
+  const ev  = auditEvents[Math.floor(Math.random()*auditEvents.length)];
+  const ip  = `${Math.floor(Math.random()*200)+10}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+  const entry = document.createElement('div');
+  entry.className = 'audit-entry';
+  entry.innerHTML = `<span class="ae-time">${now}</span><span class="ae-user">${ev.user}</span><span class="ae-action">${ev.action}</span><span class="ae-ip">${ip}</span>`;
+  log.insertBefore(entry, log.firstChild);
+  while(log.children.length > 10) log.removeChild(log.lastChild);
+}
+
+// ─── SUPABASE: LOAD INITIAL DATA ──────────────────────────────────────────────
+async function loadInitialData() {
+  // Load stats
+  const { data: statsData } = await db.from('stats').select('*').eq('id', 1).single();
+  if(statsData) {
+    stats.triggered = statsData.triggers_fired    || 0;
+    stats.contracts  = statsData.contracts_executed || 0;
+    stats.payout     = statsData.total_payout_k    || 0;
+    stats.claims     = statsData.claims_queued      || 0;
+    updateStats();
+  }
+
+  // Load last 20 events
+  const { data: eventsData } = await db.from('events').select('*').order('created_at', { ascending: false }).limit(20);
+  if(eventsData) {
+    eventsData.reverse().forEach(ev => addLogEntryFromDB(ev.event_type, ev.message, ev.hash, ev.created_at));
+  }
+
+  // Load last 10 claims
+  const { data: claimsData } = await db.from('claims').select('*').order('created_at', { ascending: false }).limit(10);
+  if(claimsData) {
+    claimsData.forEach(claim => renderClaimInQueue(claim));
+  }
+}
+loadInitialData();
+
+// ─── SUPABASE: REALTIME SUBSCRIPTIONS ─────────────────────────────────────────
+function startRealtimeSubscriptions() {
+  // Events feed
+  db.channel('events-feed')
+    .on('postgres_changes', { event:'INSERT', schema:'public', table:'events' }, payload => {
+      const ev = payload.new;
+      addLogEntryFromDB(ev.event_type, ev.message, ev.hash, ev.created_at);
+    })
+    .subscribe();
+
+  // Claims feed
+  db.channel('claims-feed')
+    .on('postgres_changes', { event:'INSERT', schema:'public', table:'claims' }, payload => {
+      renderClaimInQueue(payload.new);
+    })
+    .subscribe();
+
+  // Stats feed
+  db.channel('stats-feed')
+    .on('postgres_changes', { event:'UPDATE', schema:'public', table:'stats' }, payload => {
+      const s = payload.new;
+      stats.triggered = s.triggers_fired    || 0;
+      stats.contracts  = s.contracts_executed || 0;
+      stats.payout     = s.total_payout_k    || 0;
+      stats.claims     = s.claims_queued      || 0;
+      updateStats();
+    })
+    .subscribe();
+}
+startRealtimeSubscriptions();
+
+// ─── BACKGROUND TICKS (local animation only) ──────────────────────────────────
+let tickCount = 0;
+setInterval(() => {
+  tickCount++;
+  const rand = Math.random();
+  if(rand < 0.3)      addLogEntry('system');
+  else if(rand < 0.5) addLogEntry('claim');
+  else if(rand < 0.7) addLogEntry('contract');
+  else if(rand < 0.85)addLogEntry('payout');
+  else                addLogEntry('trigger');
+
+  if(tickCount % 3 === 0) addBlock();
+  if(tickCount % 7 === 0) addAuditEntry();
+}, 2200);
+
+// ─── SMART CONTRACT SIMULATOR ─────────────────────────────────────────────────
+function checkBreaches() {
+  [{id:'sim-temp',badge:'badge-temp',threshold:40},{id:'sim-wind',badge:'badge-wind',threshold:100},{id:'sim-rain',badge:'badge-rain',threshold:200}]
+  .forEach(c => {
+    const val   = parseFloat(document.getElementById(c.id).value);
+    const badge = document.getElementById(c.badge);
+    const input = document.getElementById(c.id);
+    if(val >= c.threshold) {
+      badge.textContent = 'BREACH ⚡'; badge.className = 'threshold-badge breached';
+      input.className = 'sim-input breach';
+    } else {
+      badge.textContent = 'NOMINAL'; badge.className = 'threshold-badge ok';
+      input.className = 'sim-input';
+    }
+  });
+}
+
+let simRunning = false;
+async function runSimulation() {
+  if(simRunning) return;
+
+  const temp   = parseFloat(document.getElementById('sim-temp').value);
+  const wind   = parseFloat(document.getElementById('sim-wind').value);
+  const rain   = parseFloat(document.getElementById('sim-rain').value);
+  const zone   = document.getElementById('sim-zone').value;
+  const amount = parseFloat(document.getElementById('sim-amount').value);
+
+  const breaches = [];
+  if(temp >= 40)  breaches.push(`TEMPERATURE: ${temp}°C (threshold: 40°C)`);
+  if(wind >= 100) breaches.push(`WIND SPEED: ${wind} km/h (threshold: 100 km/h)`);
+  if(rain >= 200) breaches.push(`RAINFALL: ${rain} mm/24h (threshold: 200 mm)`);
+
+  const out     = document.getElementById('contract-output');
+  const btn     = document.getElementById('trigger-btn');
+  const receipt = document.getElementById('sim-receipt');
+
+  out.innerHTML = '';
+  receipt.className = 'receipt';
+  btn.disabled = true;
+  simRunning   = true;
+
+  const txHash   = '0x' + Math.random().toString(16).slice(2,42);
+  const blockNum2 = 18442901 + Math.floor(Math.random()*100);
+  const gasUsed  = Math.floor(Math.random()*50000 + 120000);
+
+  const lines = [
+    {text:`// SENTINEL Contract Executor v2.4.1`, cls:'dim', delay:0},
+    {text:`// Timestamp: ${new Date().toISOString()}`, cls:'dim', delay:80},
+    {text:`// Network: Polygon (Ethereum L2)`, cls:'dim', delay:160},
+    {text:``, cls:'', delay:240},
+    {text:`> Connecting to Kafka stream...`, cls:'', delay:320},
+    {text:`> Weather oracle data received ✓`, cls:'', delay:500},
+    {text:`> Zone: ${zone}`, cls:'cyan', delay:680},
+    {text:``, cls:'', delay:760},
+    {text:`> Evaluating parametric thresholds:`, cls:'', delay:840},
+    ...(breaches.length > 0
+      ? breaches.map((b,i) => ({text:`  ⚡ BREACH: ${b}`, cls:'red', delay:920+i*120}))
+      : [{text:`  ✓ All thresholds nominal — no trigger`, cls:'green', delay:920}]
+    ),
+    {text:``, cls:'', delay:920 + breaches.length * 120},
+    ...(breaches.length > 0 ? [
+      {text:`> TRIGGER EVENT FIRED`, cls:'red', delay:1100},
+      {text:`> Loading smart contract: SENTINEL_MACRO_v2`, cls:'', delay:1280},
+      {text:`> Requesting multi-sig approval...`, cls:'', delay:1460},
+      {text:`> Signature 1/3 received ✓`, cls:'green', delay:1700},
+      {text:`> Signature 2/3 received ✓`, cls:'green', delay:1900},
+      {text:`> Signature 3/3 received ✓`, cls:'green', delay:2100},
+      {text:`> Threshold met — executing payout...`, cls:'orange', delay:2300},
+      {text:``, cls:'', delay:2380},
+      {text:`> Transaction submitted: ${txHash.slice(0,20)}...`, cls:'cyan', delay:2460},
+      {text:`> Gas estimate: ${gasUsed.toLocaleString()} wei`, cls:'dim', delay:2640},
+      {text:`> Waiting for block confirmation...`, cls:'', delay:2820},
+      {text:`> Block #${blockNum2.toLocaleString()} confirmed ✓`, cls:'green', delay:3200},
+      {text:``, cls:'', delay:3280},
+      {text:`> PAYOUT EXECUTED SUCCESSFULLY`, cls:'green', delay:3360},
+      {text:`> Amount: $${amount.toLocaleString()} USD`, cls:'green', delay:3440},
+      {text:`> IPFS receipt: Qm${Math.random().toString(36).slice(2,20)}...`, cls:'cyan', delay:3520},
+      {text:`> Blockchain log entry: immutable ✓`, cls:'green', delay:3700},
+      {text:``, cls:'', delay:3780},
+      {text:`// EXECUTION COMPLETE — ${new Date().toTimeString().slice(0,8)}`, cls:'dim', delay:3860},
+    ] : [
+      {text:`> No threshold breaches detected`, cls:'green', delay:1100},
+      {text:`> Smart contract execution: SKIPPED`, cls:'dim', delay:1280},
+      {text:`> System continues monitoring...`, cls:'', delay:1460},
+      {text:`> Try setting values above thresholds to trigger payout`, cls:'dim', delay:1640},
+    ]),
+  ];
+
+  lines.forEach(l => {
+    setTimeout(() => {
+      const div = document.createElement('div');
+      div.className = 'out-line ' + (l.cls || '');
+      div.textContent = l.text || '\u00a0';
+      out.appendChild(div);
+      out.scrollTop = out.scrollHeight;
+    }, l.delay);
+  });
+
+  const lastDelay = lines[lines.length-1].delay + 200;
+  setTimeout(async () => {
+    simRunning   = false;
+    btn.disabled = false;
+
+    if(breaches.length > 0) {
+      receipt.className = 'receipt show';
+      document.getElementById('receipt-rows').innerHTML = `
+        <div class="receipt-row"><span class="receipt-key">TX HASH</span><span class="receipt-val">${txHash.slice(0,24)}...</span></div>
+        <div class="receipt-row"><span class="receipt-key">BLOCK</span><span class="receipt-val">#${blockNum2.toLocaleString()}</span></div>
+        <div class="receipt-row"><span class="receipt-key">ZONE</span><span class="receipt-val">${zone.split(':')[0]}</span></div>
+        <div class="receipt-row"><span class="receipt-key">AMOUNT</span><span class="receipt-val">$${amount.toLocaleString()} USD</span></div>
+        <div class="receipt-row"><span class="receipt-key">STATUS</span><span class="receipt-val" style="color:var(--accent3)">CONFIRMED ✓</span></div>
+        <div class="receipt-row"><span class="receipt-key">GAS USED</span><span class="receipt-val">${gasUsed.toLocaleString()} wei</span></div>
+      `;
+
+      // Save simulation to Supabase
+      await db.from('simulations').insert({
+        zone, temperature:temp, wind_speed:wind, rainfall:rain, amount,
+        tx_hash:txHash, block_number:blockNum2, gas_used:gasUsed,
+        breaches, status:'executed'
+      });
+
+      // Log the contract event
+      await db.from('events').insert({
+        event_type: 'contract',
+        message: `Smart contract executed — ${zone.split(':')[0]} — $${amount.toLocaleString()}`,
+        hash: txHash.slice(0,16)
+      });
+
+      // Update stats in Supabase
+      const { data: current } = await db.from('stats').select('*').eq('id', 1).single();
+      await db.from('stats').update({
+        triggers_fired:     (current.triggers_fired     || 0) + 1,
+        contracts_executed: (current.contracts_executed || 0) + 1,
+        total_payout_k:     (current.total_payout_k     || 0) + Math.floor(amount / 1000)
+      }).eq('id', 1);
+
+      // Update local state
+      stats.triggered++;
+      stats.contracts++;
+      stats.payout += Math.floor(amount / 1000);
+      updateStats();
+      addLogEntry('trigger');
+      addLogEntry('contract');
+      addLogEntry('payout');
+    }
+  }, lastDelay);
+}
+
+// ─── CLAIM SUBMISSION ─────────────────────────────────────────────────────────
+let claimCounter = 847;
+let mlProcessed = 0, mlFlagged = 0, mlAutoApproved = 0;
+
+function simulateUpload() {
+  document.getElementById('upload-icon').textContent = '✅';
+  document.getElementById('upload-text').textContent = '3 PHOTOS ATTACHED · GPS VERIFIED · METADATA VALID';
+}
+
+async function submitClaim() {
+  const name     = document.getElementById('claim-name').value     || 'Anonymous';
+  const type     = document.getElementById('claim-type').value;
+  const loss     = document.getElementById('claim-loss').value     || '0';
+  const location = document.getElementById('claim-location').value || 'Unknown';
+  const lang     = document.getElementById('claim-lang').value;
+  const desc     = document.getElementById('claim-desc').value;
+
+  claimCounter++;
+  const claimId     = 'SNT-0' + claimCounter;
+  const aiScore     = Math.random() * 40 + 55;            // 55–95%
+  const fraudRisk   = Math.random();
+  const autoApprove = aiScore > 85 && fraudRisk < 0.15;
+  const flagged     = fraudRisk > 0.8;
+  const status      = flagged ? 'reviewing' : autoApprove ? 'approved' : 'pending';
+
+  // Save claim to Supabase
+  const { error } = await db.from('claims').insert({
+    claim_id:       claimId,
+    claimant_name:  name,
+    disaster_type:  type,
+    estimated_loss: parseFloat(loss),
+    location,
+    language:       lang,
+    description:    desc,
+    ai_score:       parseFloat(aiScore.toFixed(2)),
+    fraud_risk:     parseFloat(fraudRisk.toFixed(4)),
+    status,
+    auto_approved:  autoApprove,
+    flagged
+  });
+
+  if(error) { console.error('Claim save failed:', error); return; }
+
+  // Log claim event to Supabase
+  await db.from('events').insert({
+    event_type: 'claim',
+    message: `Claim ${claimId} submitted — AI score ${aiScore.toFixed(1)}% — ${status.toUpperCase()}`
+  });
+
+  // Update claims_queued stat in Supabase
+  await db.from('stats').update({ claims_queued: stats.claims + 1 }).eq('id', 1);
+
+  // ✅ FIX 3: Update ML counters, render in queue, reset form — previously missing
+  mlProcessed++;
+  if(flagged)     mlFlagged++;
+  if(autoApprove) mlAutoApproved++;
+  document.getElementById('ml-processed').textContent   = mlProcessed;
+  document.getElementById('ml-flagged').textContent     = mlFlagged;
+  document.getElementById('ml-autoapproved').textContent = mlAutoApproved;
+
+  // Render immediately for the submitting user (realtime handles other users)
+  renderClaimInQueue({
+    claim_id: claimId, claimant_name: name, disaster_type: type,
+    estimated_loss: parseFloat(loss), location,
+    ai_score: parseFloat(aiScore.toFixed(2)),
+    status, flagged, auto_approved: autoApprove
+  });
+
+  // Reset form
+  ['claim-name','claim-policy','claim-loss','claim-location','claim-desc'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('upload-icon').textContent = '📷';
+  document.getElementById('upload-text').textContent = 'TAP TO ATTACH DAMAGE PHOTOS · VOICE MEMO · DOCUMENTS';
+
+  // Update local stats and event log
+  addLogEntry('claim');
+  stats.claims++;
+  updateStats();
+}
+
+// ─── COMPONENT MODALS ─────────────────────────────────────────────────────────
+const modalData = {
+  weather: {
+    title:'Weather Trigger Engine', sub:'LAYER 01 — DATA INGESTION & TRIGGERING',
+    body:`
+      <div class="modal-section"><div class="modal-section-title">PROCESS FLOW</div><div class="process-steps">
+        <div class="step"><div class="step-num">01</div><div class="step-text">Open-Meteo API continuously streams weather data for all registered coverage zones at 1-minute intervals.</div></div>
+        <div class="step"><div class="step-num">02</div><div class="step-text">Apache Kafka ingests the raw stream, partitioned by geographic zone. AWS Kinesis used as fallback for high-availability.</div></div>
+        <div class="step"><div class="step-num">03</div><div class="step-text">Python microservice consumes Kafka events, evaluates each reading against the configured parametric threshold schema.</div></div>
+        <div class="step"><div class="step-num">04</div><div class="step-text">On breach detection, a trigger event is published to the smart contract executor queue. Kubernetes CronJobs handle scheduled re-evaluation.</div></div>
+      </div></div>
+      <div class="modal-section"><div class="modal-section-title">TECH STACK</div><div class="tech-grid">
+        <div class="tech-item"><div class="tech-name">Open-Meteo API</div><div class="tech-role">FREE · HIGH-RESOLUTION · GLOBAL COVERAGE</div></div>
+        <div class="tech-item"><div class="tech-name">Apache Kafka</div><div class="tech-role">REAL-TIME STREAMING · FAULT-TOLERANT</div></div>
+        <div class="tech-item"><div class="tech-name">Python Microservice</div><div class="tech-role">THRESHOLD EVALUATION LOGIC</div></div>
+        <div class="tech-item"><div class="tech-name">Kubernetes CronJobs</div><div class="tech-role">SCHEDULER & ORCHESTRATION</div></div>
+      </div></div>
+      <div class="modal-section"><div class="modal-section-title">THRESHOLD CONFIGURATION</div>
+        <div class="modal-text">Parametric conditions are configurable per zone. Default triggers: Temperature &gt; 40°C, Wind &gt; 100 km/h, Rainfall &gt; 200mm/24h. Multiple breach conditions can be combined using AND/OR logic. Chainlink Oracle integration is recommended to feed on-chain data trustlessly.</div>
+      </div>`
+  },
+  blockchain: {
+    title:'Macro Shield Controller', sub:'LAYER 02 — AUTOMATED FUND DISBURSEMENT',
+    body:`
+      <div class="modal-section"><div class="modal-section-title">PROCESS FLOW</div><div class="process-steps">
+        <div class="step"><div class="step-num">01</div><div class="step-text">Trigger event received from the Weather Engine via the smart contract executor queue.</div></div>
+        <div class="step"><div class="step-num">02</div><div class="step-text">Multi-signature approval collected from authorized oracles (2-of-3 model) before execution.</div></div>
+        <div class="step"><div class="step-num">03</div><div class="step-text">Solidity smart contract executes instantly, transferring funds to all policyholders registered in the affected zone.</div></div>
+        <div class="step"><div class="step-num">04</div><div class="step-text">Every transaction logged immutably on-chain. Receipt stored on IPFS. Claimants can verify independently.</div></div>
+      </div></div>
+      <div class="modal-section"><div class="modal-section-title">TECH STACK</div><div class="tech-grid">
+        <div class="tech-item"><div class="tech-name">Ethereum / Polygon L2</div><div class="tech-role">BLOCKCHAIN PLATFORM · LOW GAS FEES</div></div>
+        <div class="tech-item"><div class="tech-name">Solidity</div><div class="tech-role">SMART CONTRACT LANGUAGE</div></div>
+        <div class="tech-item"><div class="tech-name">Hardhat</div><div class="tech-role">DEVELOPMENT & TESTING FRAMEWORK</div></div>
+        <div class="tech-item"><div class="tech-name">Ethers.js</div><div class="tech-role">WALLET & CONTRACT INTEGRATION</div></div>
+        <div class="tech-item"><div class="tech-name">IPFS</div><div class="tech-role">OFF-CHAIN RECEIPT STORAGE</div></div>
+        <div class="tech-item"><div class="tech-name">Chainlink Oracle</div><div class="tech-role">TRUSTLESS ON-CHAIN DATA FEED</div></div>
+      </div></div>`
+  },
+  ml: {
+    title:'Micro Shield Surveyor', sub:'LAYER 03 — DAMAGE VERIFICATION & CLAIM VALIDATION',
+    body:`
+      <div class="modal-section"><div class="modal-section-title">PROCESS FLOW</div><div class="process-steps">
+        <div class="step"><div class="step-num">01</div><div class="step-text">Claimant submits photos, GPS location, and damage description via Flutter mobile app with offline caching.</div></div>
+        <div class="step"><div class="step-num">02</div><div class="step-text">Python scripts validate image EXIF metadata — GPS coordinates, timestamps, and device consistency checks.</div></div>
+        <div class="step"><div class="step-num">03</div><div class="step-text">TensorFlow/PyTorch CV model deployed on SageMaker assesses visible damage severity. Returns confidence score.</div></div>
+        <div class="step"><div class="step-num">04</div><div class="step-text">Isolation Forest / Autoencoder anomaly detection screens for fraud patterns. Suspicious claims flagged for manual review.</div></div>
+        <div class="step"><div class="step-num">05</div><div class="step-text">Claims &gt; 85% confidence auto-approved for payout. Others enter human reviewer queue on React dashboard.</div></div>
+      </div></div>
+      <div class="modal-section"><div class="modal-section-title">TECH STACK</div><div class="tech-grid">
+        <div class="tech-item"><div class="tech-name">TensorFlow / PyTorch</div><div class="tech-role">DAMAGE ASSESSMENT CV MODEL</div></div>
+        <div class="tech-item"><div class="tech-name">AWS SageMaker</div><div class="tech-role">MANAGED ML INFERENCE ENDPOINT</div></div>
+        <div class="tech-item"><div class="tech-name">Isolation Forest</div><div class="tech-role">FRAUD ANOMALY DETECTION</div></div>
+        <div class="tech-item"><div class="tech-name">Python EXIF Scripts</div><div class="tech-role">METADATA VALIDATION</div></div>
+      </div></div>`
+  },
+  ux: {
+    title:'UX Empathy Agent', sub:'LAYER 04 — USER EXPERIENCE & ACCESSIBILITY',
+    body:`
+      <div class="modal-section"><div class="modal-section-title">DESIGN PHILOSOPHY</div>
+        <div class="modal-text">SENTINEL's users are often in crisis — poor connectivity, low-end devices, language barriers. The UX Empathy Agent is designed offline-first, voice-first, and multilingual-first. Accessibility is not an afterthought — it is the foundation.</div>
+      </div>
+      <div class="modal-section"><div class="modal-section-title">KEY CAPABILITIES</div><div class="process-steps">
+        <div class="step"><div class="step-num">🎙</div><div class="step-text">Voice-to-text claim submission via Google Speech-to-Text or open-source Whisper model. Supports 50+ languages.</div></div>
+        <div class="step"><div class="step-num">📴</div><div class="step-text">Full offline functionality using SQLite / Realm on-device database. Auto-syncs when connectivity is restored.</div></div>
+        <div class="step"><div class="step-num">🌐</div><div class="step-text">i18next localization framework supporting RTL languages and regional dialects.</div></div>
+        <div class="step"><div class="step-num">🔔</div><div class="step-text">Firebase Cloud Messaging for real-time claim status push notifications.</div></div>
+      </div></div>
+      <div class="modal-section"><div class="modal-section-title">TECH STACK</div><div class="tech-grid">
+        <div class="tech-item"><div class="tech-name">Flutter</div><div class="tech-role">CROSS-PLATFORM MOBILE APP</div></div>
+        <div class="tech-item"><div class="tech-name">Whisper / Google STT</div><div class="tech-role">VOICE RECOGNITION · 50+ LANGUAGES</div></div>
+        <div class="tech-item"><div class="tech-name">i18next</div><div class="tech-role">LOCALIZATION FRAMEWORK</div></div>
+        <div class="tech-item"><div class="tech-name">Firebase FCM</div><div class="tech-role">PUSH NOTIFICATIONS</div></div>
+      </div></div>`
+  },
+  security: {
+    title:'Security & Compliance Layer', sub:'LAYER 05 — SECURITY, PRIVACY & COMPLIANCE',
+    body:`
+      <div class="modal-section"><div class="modal-section-title">SECURITY ARCHITECTURE</div><div class="process-steps">
+        <div class="step"><div class="step-num">🔒</div><div class="step-text">AES-256 encryption at rest for all user data, claims, and financial records. TLS 1.3 enforced for all API and mobile transport.</div></div>
+        <div class="step"><div class="step-num">👤</div><div class="step-text">OAuth 2.0 / OpenID Connect via Keycloak. Role-based access: Claimant, Reviewer, Admin, Contract Executor. MFA on all admin roles.</div></div>
+        <div class="step"><div class="step-num">🛡</div><div class="step-text">Kong API Gateway enforces rate limiting, request validation, and DDoS protection. Follows OWASP API Security Top 10.</div></div>
+        <div class="step"><div class="step-num">📋</div><div class="step-text">Blockchain provides immutable audit trail for all financial events. ELK Stack for system-level audit logging. GDPR & ISO 27001 compliance framework.</div></div>
+      </div></div>
+      <div class="modal-section"><div class="modal-section-title">COMPLIANCE STANDARDS</div>
+        <div class="modal-text">SENTINEL implements compliance controls for GDPR (data privacy), ISO 27001 (information security management), SOC 2 Type II (service organization controls), and local financial data protection regulations applicable in deployment regions.</div>
+      </div>`
+  },
+  ops: {
+    title:'Orchestration & Monitoring', sub:'LAYER 06 — DEVOPS, SCALING & OBSERVABILITY',
+    body:`
+      <div class="modal-section"><div class="modal-section-title">INFRASTRUCTURE</div><div class="process-steps">
+        <div class="step"><div class="step-num">☸</div><div class="step-text">Kubernetes orchestrates all microservices with horizontal pod autoscaling. 24 pods across 6 service namespaces maintain 99.9% uptime SLA.</div></div>
+        <div class="step"><div class="step-num">🔄</div><div class="step-text">CI/CD via GitHub Actions with automated testing, security scanning, and staged deployment (dev → staging → prod).</div></div>
+        <div class="step"><div class="step-num">📊</div><div class="step-text">Prometheus collects metrics from all services. Grafana dashboards visualize latency, throughput, error rates, and ML model accuracy.</div></div>
+        <div class="step"><div class="step-num">🚨</div><div class="step-text">PagerDuty on-call alerting triggers within 2 minutes of SLA breach. ELK Stack provides centralized searchable log aggregation.</div></div>
+      </div></div>
+      <div class="modal-section"><div class="modal-section-title">TECH STACK</div><div class="tech-grid">
+        <div class="tech-item"><div class="tech-name">Kubernetes</div><div class="tech-role">CONTAINER ORCHESTRATION</div></div>
+        <div class="tech-item"><div class="tech-name">GitHub Actions</div><div class="tech-role">CI/CD PIPELINES</div></div>
+        <div class="tech-item"><div class="tech-name">Prometheus + Grafana</div><div class="tech-role">METRICS & DASHBOARDS</div></div>
+        <div class="tech-item"><div class="tech-name">ELK Stack</div><div class="tech-role">CENTRALIZED LOGGING</div></div>
+        <div class="tech-item"><div class="tech-name">PagerDuty</div><div class="tech-role">ON-CALL ALERTING</div></div>
+        <div class="tech-item"><div class="tech-name">Opsgenie</div><div class="tech-role">INCIDENT MANAGEMENT</div></div>
+      </div></div>`
+  }
+};
+
+function openModal(key) {
+  const data = modalData[key];
+  document.getElementById('modal-title').textContent = data.title;
+  document.getElementById('modal-sub').textContent   = data.sub;
+  document.getElementById('modal-body').innerHTML    = data.body;
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(e) {
+  if(e.target === document.getElementById('modal-overlay')) closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ─── INITIAL LOCAL ENTRIES (fallback while Supabase loads) ────────────────────
+setTimeout(() => addAuditEntry(), 1000);
+setTimeout(() => addAuditEntry(), 2000);
+setTimeout(() => addAuditEntry(), 3000);
+setTimeout(() => addLogEntry('system'),   500);
+setTimeout(() => addLogEntry('contract'), 1200);
+setTimeout(() => addLogEntry('payout'),   1900);
+setTimeout(() => addLogEntry('claim'),    2600);
+setTimeout(() => addLogEntry('trigger'),  3300);
+</script>
+</body>
+</html>
